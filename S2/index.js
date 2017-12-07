@@ -1,67 +1,71 @@
 window.onload = function () {
-  Init();
-
-  $("#button").mouseleave(function () {
-    clear();
-    Init();
-  });
-
-  $("#button").mouseenter(function () {
-    $("#A").click();
-  });
+  $("#button").mouseleave(clear);
+  $("#button").mouseenter(Init);
 }
 
-function Init() {
-  $("li").click(function() {
-    if($(this).hasClass("disable")) 
-      return;
-    $(this).children("span").removeClass("noshow");
-    $(this).siblings().removeClass('enable').addClass('disable');
-    var that = this;
-    var span = $(this).children("span");
-    $.get($(this).text(),function(data){
-      if ($(that).hasClass("disable")) 
+function aHandler (sum) {
+  return handler("#A", sum);
+}
+
+function bHandler (sum) {
+  return handler("#B", sum);
+}
+
+function cHandler (sum) {
+  return handler("#C", sum);
+}
+
+function dHandler (sum) {
+  return handler("#D", sum);
+}
+
+function eHandler (sum) {
+  return handler("#E", sum);
+}
+
+function handler (id, sum) {
+  $(id).children("span").removeClass("noshow");
+  $(id).siblings().removeClass('enable').addClass('disable');
+  return new Promise((resolve, reject) => {
+    $.get(id.substr(1), function (data) {
+      if ($(id).hasClass("disable")||$(id).children("span").hasClass("noshow")) 
         return;
-      $(span).text(data);
-      $(that).removeClass('enable').addClass('disable');
-      var ifall = true
-      for (var i = 0; i < $(that).siblings().length; i++) {
-        if ($($(that).siblings()[i]).children("span").hasClass("noshow")) {
-          $($(that).siblings()[i]).removeClass('disable').addClass('enable');
-          ifall = false;
+      sum += parseInt(data);
+      $(id).children("span").text(data);
+      $(id).removeClass('enable').addClass('disable');
+      for (var i = 0; i < $(id).siblings().length; i++) {
+        if ($($(id).siblings()[i]).children("span").hasClass("noshow")) {
+          $($(id).siblings()[i]).removeClass('disable').addClass('enable');
         }
       }
-      if (ifall) {
-        $("#info-bar").removeClass('disable').addClass('enable');
-        setTimeout("$('#info-bar').click()", 500);
-      }
-    }).done(function () {
-      var buttonString = ["#A", "#B", "#C", "#D", "#E"];
-      for (var i = 0; i < 5; i++) {
-        if ($(buttonString[i]).children("span").hasClass("noshow")) {
-          $(buttonString[i]).click();
-          break;
-        }
-      }
+      resolve(sum);
     });
-    $(this).unbind("click");
-  });
-
-  $("#info-bar").click(function() {
-    if ($(this).hasClass("disable"))
-      return;
-    var sum = 0;
-    $.each($("span"), function(index, item){ 
-		  sum+= parseInt($.trim($(item).text()));
-    });
-
-    $(this).text(sum).removeClass('enable').addClass('disable');
-    $(this).click(function () {});
   });
 }
 
-function clear(req) {
+function bubbleHandler (sum) {
+  $("#info-bar").removeClass('disable').addClass('enable');
+  setTimeout("$('#info-bar').text("+sum+").addClass('disable').removeClass('enable');", 500);
+}
+
+function clear () {
+  $('#info-bar').text("?");
   $("li").addClass("enable").removeClass("disable");
   $("span").text("...").addClass("noshow");
-  $("#info-bar").text("?").addClass("disable").removeClass("enable");
+  $("#info-bar").text("").addClass("disable").removeClass("enable");
+}
+
+function Init () {
+  var sum = 0;
+  aHandler(sum).then(
+    sum => { bHandler(sum).then (
+      sum => { cHandler(sum).then (
+        sum => { dHandler(sum).then ( 
+          sum => { eHandler(sum).then ( 
+            sum => { bubbleHandler(sum);
+            })
+          });
+        });
+      });
+    });
 }

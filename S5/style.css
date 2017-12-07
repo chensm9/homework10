@@ -49,7 +49,7 @@ html, body {
 
 #button:hover #info-bar {
   width: 96px;
-  height: 66px;
+  height: 76px;
   bottom: 150px;
   left: 25px;
   border-radius: 50%;
@@ -57,10 +57,10 @@ html, body {
   opacity: 1;
   text-align: center;
   padding: 22px;
-  padding-top: 42px;
+  padding-top: 32px;
   white-space:normal;
   word-break:break-all;;
-  font-size: 10pt;
+  font-size: 11pt;
 }
 
 #control-ring-container {
@@ -170,6 +170,20 @@ html, body {
   text-align: center;
   border-radius: 100%;
   font-size: 16pt;
+  color: #26E79E;
+  background-color: #303f9f;
+  transition: all 0.5s;
+}
+
+#message {
+  position: absolute;
+  bottom: 370px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  border-radius: 10%;
+  font-size: 14pt;
   color: #26E79E;
   background-color: #303f9f;
   transition: all 0.5s;

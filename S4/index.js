@@ -1,75 +1,86 @@
 window.onload = function () {
-  var buttonString = ["#A", "#B", "#C", "#D", "#E"];
-  Init( buttonString);
-
-  $("#button").mouseleave(function () {
-    $("#sequence").addClass("noshow");
-    clear();
-    Init(buttonString);
-  });
-
-  $("#button").mouseenter(function () {
-    buttonString.sort(function(){ return 0.5 - Math.random(); });
-    var sequence = "";
-    for (var i = 0; i < 5; i++) {
-      sequence += buttonString[i].substr(1) + (i == 4 ? "":"，");
-    }
-    $("#sequence").text(sequence).removeClass("noshow");
-    $(buttonString[0]).click();
-  });
+  $("#button").mouseleave(clear);
+  $("#button").mouseenter(Init);
 }
 
-function Init(buttonString) {
-  $("li").click(function() {
-    if($(this).hasClass("disable")) 
-      return;
-    $(this).children("span").removeClass("noshow");
-    $(this).siblings().removeClass('enable').addClass('disable');
-    var that = this;
-    var span = $(this).children("span");
-    $.ajax({
-        url: $(this).text(), 
-        success: function(data) {
-          if ($(that).hasClass("disable")||$(that).children("span").hasClass("noshow")) 
-            return;
-          $(span).text(data);
-          $(that).removeClass('enable').addClass('disable');
-          for (var i = 0; i < 5; i++) {
-            if ($(buttonString[i]).children("span").hasClass("noshow")) {
-              $(buttonString[i]).removeClass('disable').addClass('enable').click();
-              break;
-            }
-          }
-          if (i == 5) {
-            $("#info-bar").removeClass('disable').addClass('enable');
-            setTimeout("$('#info-bar').click()", 500);
-          }
-        },
-        error: function(data, error){
-          console.log(error);
-        },
-        complete: function(){ 
-          r = null;
+function aHandler (sum) {
+  return handler("#A", sum);
+}
+
+function bHandler (sum) {
+  return handler("#B", sum);
+}
+
+function cHandler (sum) {
+  return handler("#C", sum);
+}
+
+function dHandler (sum) {
+  return handler("#D", sum);
+}
+
+function eHandler (sum) {
+  return handler("#E", sum);
+}
+
+function handler (id, sum) {
+  $(id).children("span").removeClass("noshow");
+  $(id).siblings().removeClass('enable').addClass('disable');
+  return new Promise((resolve, reject) => {
+    $.get(id.substr(1), function (data) {
+      if ($(id).hasClass("disable")||$(id).children("span").hasClass("noshow")) 
+        return;
+      sum += parseInt(data);
+      $(id).children("span").text(data);
+      $(id).removeClass('enable').addClass('disable');
+      for (var i = 0; i < $(id).siblings().length; i++) {
+        if ($($(id).siblings()[i]).children("span").hasClass("noshow")) {
+          $($(id).siblings()[i]).removeClass('disable').addClass('enable');
         }
+      }
+      resolve(sum);
     });
-    $(this).unbind("click");
-  });
-
-  $("#info-bar").click(function() {
-    if ($(this).hasClass("disable"))
-      return;
-    var sum = 0;
-    $.each($("span"), function(index, item){ 
-		  sum+= parseInt($.trim($(item).text()));
-    });
-
-    $(this).text(sum).removeClass('enable').addClass('disable');
-    $(this).unbind("click");
   });
 }
 
-function clear() {
+function bubbleHandler (sum) {
+  $("#info-bar").removeClass('disable').addClass('enable');
+  setTimeout("$('#info-bar').text("+sum+").addClass('disable').removeClass('enable');", 500);
+}
+
+function clear () {
+  $('#info-bar').text("?");
+  $("#sequence").addClass("noshow");
   $("li").addClass("enable").removeClass("disable");
   $("span").text("...").addClass("noshow");
-  $("#info-bar").text("?").addClass("disable").removeClass("enable");
+  $("#info-bar").text("").addClass("disable").removeClass("enable");
+}
+
+function Init () {
+  var ID = ["A", "B", "C", "D", "E"];
+  var handers = {
+    "A": aHandler,
+    "B": bHandler,
+    "C": cHandler,
+    "D": dHandler,
+    "E": eHandler
+  }
+  ID.sort(function(){ return 0.5 - Math.random(); });
+  var sequence = "";
+  for (var i = 0; i < 5; i++) {
+    sequence += ID[i] + ( i == 4 ? "":"，" );
+  }
+  $("#sequence").text(sequence).removeClass("noshow");
+  var sum = 0;
+  handers[ID[0]](sum).then(
+    sum => { handers[ID[1]](sum).then (
+      sum => { handers[ID[2]](sum).then (
+        sum => { handers[ID[3]](sum).then ( 
+          sum => { handers[ID[4]](sum).then ( 
+            sum => { bubbleHandler(sum);
+            })
+          });
+        });
+      });
+    });
 }
