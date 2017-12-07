@@ -1,12 +1,13 @@
+var req = [];
 window.onload = function () {
   $("#button").mouseleave(clear);
   $("#button").mouseenter(Init);
 }
 
 function handler () {
-  $(this).children("span").removeClass("noshow");
+  $(this).children("span").removeClass("noshow").unbind("click");
   var that = this;
-  $.get($(this).text(), function (data) {
+  req.push($.get($(this).text(), function (data) {
     if ($(that).hasClass("disable")||$(that).children("span").hasClass("noshow"))
       return;
     $(that).children("span").text(data);
@@ -20,8 +21,7 @@ function handler () {
     }
     if (ifall) 
       bubbleHandler();
-  });
-  $(this).unbind("click");
+  }));
 }
 
 function bubbleHandler () {
@@ -34,6 +34,10 @@ function bubbleHandler () {
 }
 
 function clear () {
+  while (req.length != 0) {
+    var r = req.shift();
+    if (r) r.abort();
+  }
   $('#info-bar').text("?");
   $("#sequence").addClass("noshow");
   $("li").addClass("enable").removeClass("disable");
