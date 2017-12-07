@@ -38,11 +38,10 @@ function clear () {
     var r = req.shift();
     if (r) r.abort();
   }
-  $('#info-bar').text("?");
   $("#sequence").addClass("noshow");
   $("li").addClass("enable").removeClass("disable");
   $("span").text("...").addClass("noshow");
-  $("#info-bar").text("").addClass("disable").removeClass("enable");
+  $("#info-bar").text("?").addClass("disable").removeClass("enable");
 }
 
 function Init () {
