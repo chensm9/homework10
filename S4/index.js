@@ -1,26 +1,25 @@
 window.onload = function () {
-  var req = [];
   var buttonString = ["#A", "#B", "#C", "#D", "#E"];
-  Init(req, buttonString);
+  Init( buttonString);
 
   $("#button").mouseleave(function () {
     $("#sequence").addClass("noshow");
-    clear(req);
-    Init(req, buttonString);
+    clear();
+    Init(buttonString);
   });
 
   $("#button").mouseenter(function () {
     buttonString.sort(function(){ return 0.5 - Math.random(); });
     var sequence = "";
     for (var i = 0; i < 5; i++) {
-      sequence += buttonString[i].substr(1)+(i == 4 ? "":"，");
+      sequence += buttonString[i].substr(1) + (i == 4 ? "":"，");
     }
     $("#sequence").text(sequence).removeClass("noshow");
     $(buttonString[0]).click();
   });
 }
 
-function Init(req, buttonString) {
+function Init(buttonString) {
   $("li").click(function() {
     if($(this).hasClass("disable")) 
       return;
@@ -28,11 +27,10 @@ function Init(req, buttonString) {
     $(this).siblings().removeClass('enable').addClass('disable');
     var that = this;
     var span = $(this).children("span");
-    console.log("click"+$(this).text());
-    var r = $.ajax({
+    $.ajax({
         url: $(this).text(), 
         success: function(data) {
-          if ($(that).hasClass("disable")) 
+          if ($(that).hasClass("disable")||$(that).children("span").hasClass("noshow")) 
             return;
           $(span).text(data);
           $(that).removeClass('enable').addClass('disable');
@@ -54,7 +52,6 @@ function Init(req, buttonString) {
           r = null;
         }
     });
-    req.push(r);
     $(this).unbind("click");
   });
 
@@ -71,12 +68,7 @@ function Init(req, buttonString) {
   });
 }
 
-function clear(req) {
-  console.log("length "+ req.length);
-  while (req.length != 0) {
-    var temp = req.shift();
-    if (temp) temp.abort();
-  }
+function clear() {
   $("li").addClass("enable").removeClass("disable");
   $("span").text("...").addClass("noshow");
   $("#info-bar").text("?").addClass("disable").removeClass("enable");

@@ -1,14 +1,13 @@
 window.onload = function () {
-  var req = [];
-  Init(req);
+  Init();
 
   $("#button").mouseleave(function () {
-    clear(req);
-    Init(req);
+    clear();
+    Init();
   });
 }
 
-function Init(req) {
+function Init() {
   $("li").click(function() {
     if($(this).hasClass("disable")) 
       return;
@@ -16,22 +15,22 @@ function Init(req) {
     $(this).siblings().removeClass('enable').addClass('disable');
     var that = this;
     var span = $(this).children("span");
-    req.push($.get($(this).text(),function(data){
-        if ($(that).hasClass("disable")) 
-            return;
-        $(span).text(data);
-        $(that).removeClass('enable').addClass('disable');
-        var ifall = true
-        for (var i = 0; i < $(that).siblings().length; i++) {
-          if ($($(that).siblings()[i]).children("span").hasClass("noshow")) {
-            $($(that).siblings()[i]).removeClass('disable').addClass('enable');
-            ifall = false;
-          }
+    $.get($(this).text(),function(data){
+      if ($(that).children("span").hasClass("noshow")) 
+        return;
+      $(span).text(data);
+      $(that).removeClass('enable').addClass('disable');
+      var ifall = true
+      for (var i = 0; i < $(that).siblings().length; i++) {
+        if ($($(that).siblings()[i]).children("span").hasClass("noshow")) {
+          $($(that).siblings()[i]).removeClass('disable').addClass('enable');
+          ifall = false;
         }
-        if (ifall) {
-          $("#info-bar").removeClass('disable').addClass('enable');
-        }
-      }));
+      }
+      if (ifall) {
+        $("#info-bar").removeClass('disable').addClass('enable');
+      }
+    });
     $(this).unbind("click");
   });
 
@@ -48,11 +47,7 @@ function Init(req) {
   });
 }
 
-function clear(req) {
-  while (req.length != 0) {
-    var temp = req.shift();
-    if (temp) temp.abort();
-  }
+function clear() {
   $("li").addClass("enable").removeClass("disable");
   $("span").text("...").addClass("noshow");
   $("#info-bar").text("?").addClass("disable").removeClass("enable");

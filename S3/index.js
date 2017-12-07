@@ -51,7 +51,6 @@ function Init(req) {
 }
 
 function clear(req) {
-  console.log(req.length);
   while (req.length != 0) {
     var temp = req.shift();
     if (temp) temp.abort();
