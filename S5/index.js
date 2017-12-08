@@ -24,8 +24,6 @@ function dHandler (sum) {
 }
 
 function eHandler (sum) {
-  if ($("#message").hasClass("noshow"))
-    $("#message").removeClass("noshow");
   $('#message').text("才怪");
   return handler("#E", sum);
 }
