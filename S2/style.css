@@ -149,7 +149,8 @@ html, body {
 }
 
 #button:hover .apb {
-  width:50px;
+  cursor: pointer;
+  width: 50px;
   height: 50px;
   bottom: 85px;
   left: 65px;
@@ -163,7 +164,7 @@ span.noshow {
 }
 
 .enable {
-  cursor: pointer;
+  cursor: not-allowed;
   color: #26E79E;
   background-color: #303f9f;
 }

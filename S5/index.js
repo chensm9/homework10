@@ -34,18 +34,24 @@ function handler (id, sum) {
   $(id).children("span").removeClass("noshow");
   $(id).siblings().removeClass('enable').addClass('disable');
   return new Promise((resolve, reject) => {
-    $.get(id.substr(1), function (data) {
-      if ($(id).hasClass("disable")||$(id).children("span").hasClass("noshow")) 
-        return;
-      sum += parseInt(data);
-      $(id).children("span").text(data);
-      $(id).removeClass('enable').addClass('disable');
-      for (var i = 0; i < $(id).siblings().length; i++) {
-        if ($($(id).siblings()[i]).children("span").hasClass("noshow")) {
-          $($(id).siblings()[i]).removeClass('disable').addClass('enable');
+    $.ajax({
+      url: id.substr(1), 
+      success: function (data) {
+        if ($(id).hasClass("disable")||$(id).children("span").hasClass("noshow")) 
+          return;
+        sum += parseInt(data);
+        $(id).children("span").text(data);
+        $(id).removeClass('enable').addClass('disable');
+        for (var i = 0; i < $(id).siblings().length; i++) {
+          if ($($(id).siblings()[i]).children("span").hasClass("noshow")) {
+            $($(id).siblings()[i]).removeClass('disable').addClass('enable');
+          }
         }
+        resolve(sum);
+      },
+      error: error => {
+        console.log(error);
       }
-      resolve(sum);
     });
   });
 }
