@@ -4,31 +4,32 @@ window.onload = function () {
 }
 
 function aHandler (sum) {
-  $('#message').text("这是个天大的秘密");
-  return handler("#A", sum);
+  return handler("#A", sum, "这是个天大的秘密");
 }
 
 function bHandler (sum) {
-  $('#message').text("我不知道");
-  return handler("#B", sum);
+  return handler("#B", sum, "我不知道");
 }
 
 function cHandler (sum) {
-  $('#message').text("你不知道");
-  return handler("#C", sum);
+  return handler("#C", sum, "你不知道");
 }
 
 function dHandler (sum) {
-  $('#message').text("他不知道");
-  return handler("#D", sum);
+  return handler("#D", sum, "他不知道");
 }
 
 function eHandler (sum) {
-  $('#message').text("才怪");
-  return handler("#E", sum);
+  return handler("#E", sum, "才怪");
 }
 
-function handler (id, sum) {
+function showMessage (message) {
+  if ($("#message").hasClass("noshow"))
+    $("#message").removeClass("noshow");
+  $('#message').text(message);
+}
+
+function handler (id, sum, message) {
   $(id).children("span").removeClass("noshow");
   $(id).siblings().removeClass('enable').addClass('disable');
   return new Promise((resolve, reject) => {
@@ -45,7 +46,18 @@ function handler (id, sum) {
             $($(id).siblings()[i]).removeClass('disable').addClass('enable');
           }
         }
-        resolve(sum);
+
+        //随机失败，概率五五开
+        if (Math.random() >= 0.5) {
+          showMessage(message);
+          resolve(sum);
+        } else {
+          resolve({
+            currentSum: sum, 
+            message: message
+          });
+        }
+        
       },
       error: error => {
         console.log(error);
@@ -79,6 +91,15 @@ function Init () {
       "C": cHandler,
       "D": dHandler,
       "E": eHandler
+    };
+
+    //message的否定形式
+    var nega_message = {
+      "你不知道": "你知道",
+      "我不知道": "我知道",
+      "他不知道": "他知道",
+      "才怪": "讲真",
+      "这是个天大的秘密": "这个秘密我们都知道",
     }
     ID.sort(function(){ return 0.5 - Math.random(); });
     var sequence = "";
@@ -86,13 +107,43 @@ function Init () {
       sequence += ID[i] + ( i == 4 ? "":"，" );
     }
     $("#sequence").text(sequence).removeClass("noshow");
-    $("#message").removeClass("noshow");
+    // $("#message").removeClass("noshow");
     var sum = 0;
     handers[ID[0]](sum)
-    .then(sum => { return handers[ID[1]](sum);})
-    .then(sum => { return handers[ID[2]](sum);})
-    .then(sum => { return handers[ID[3]](sum);})
-    .then(sum => { return handers[ID[4]](sum);})
-    .then(sum => { bubbleHandler(sum);});
+    .then(sum => { 
+      if (sum.message != undefined) {
+        showMessage(nega_message[sum.message]);
+        return handers[ID[1]](sum.currentSum);
+      }
+      return handers[ID[1]](sum);
+    })
+    .then(sum => { 
+      if (sum.message != undefined) {
+        showMessage(nega_message[sum.message]);
+        return handers[ID[2]](sum.currentSum);
+      }
+      return handers[ID[2]](sum);
+    })
+    .then(sum => { 
+      if (sum.message != undefined) {
+        showMessage(nega_message[sum.message]);
+        return handers[ID[3]](sum.currentSum);
+      }
+      return handers[ID[3]](sum);
+    })
+    .then(sum => { 
+      if (sum.message != undefined) {
+        showMessage(nega_message[sum.message]);
+        return handers[ID[4]](sum.currentSum);
+      }
+      return handers[ID[4]](sum);
+    })
+    .then(sum => { 
+      if (sum.message != undefined) {
+        showMessage(nega_message[sum.message]);
+        return bubbleHandler(sum.currentSum);
+      }
+      return bubbleHandler(sum);
+    })
   })
 }
