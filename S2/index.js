@@ -57,17 +57,12 @@ function clear () {
 function Init () {
   $(".apb").bind("click", function () {
     var sum = 0;
-    aHandler(sum).then(
-      sum => { bHandler(sum).then (
-        sum => { cHandler(sum).then (
-          sum => { dHandler(sum).then ( 
-            sum => { eHandler(sum).then ( 
-              sum => { bubbleHandler(sum);
-              });
-            });
-          });
-        });
-      });
+    aHandler(sum)
+    .then(sum => { return bHandler(sum)})
+    .then(sum => { return cHandler(sum)})
+    .then(sum => { return dHandler(sum)})
+    .then(sum => { return eHandler(sum)})
+    .then(sum => { bubbleHandler(sum)});
     $(this).unbind("click");
   });
 }

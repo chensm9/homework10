@@ -84,16 +84,11 @@ function Init () {
     $("#sequence").text(sequence).removeClass("noshow");
     $("#message").removeClass("noshow");
     var sum = 0;
-    handers[ID[0]](sum).then(
-      sum => { handers[ID[1]](sum).then (
-        sum => { handers[ID[2]](sum).then (
-          sum => { handers[ID[3]](sum).then ( 
-            sum => { handers[ID[4]](sum).then ( 
-              sum => { bubbleHandler(sum);
-              })
-            });
-          });
-        });
-      });
+    handers[ID[0]](sum)
+    .then(sum => { return handers[ID[1]](sum)})
+    .then(sum => { return handers[ID[2]](sum)})
+    .then(sum => { return handers[ID[3]](sum)})
+    .then(sum => { return handers[ID[4]](sum)})
+    .then(sum => { bubbleHandler(sum)});
   })
 }
