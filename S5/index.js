@@ -34,7 +34,7 @@ function handler (id, sum) {
   return new Promise((resolve, reject) => {
     $.ajax({
       url: id.substr(1), 
-      success: function (data) {
+      success: data => {
         if ($(id).hasClass("disable")||$(id).children("span").hasClass("noshow")) 
           return;
         sum += parseInt(data);
