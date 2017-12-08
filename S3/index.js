@@ -1,11 +1,12 @@
 var req = [];
 window.onload = function () {
+  $("li").click(handler);
   $("#button").mouseleave(clear);
   $("#button").mouseenter(Init);
 }
 
 function handler () {
-  $(this).children("span").removeClass("noshow").unbind("click");
+  $(this).children("span").removeClass("noshow");
   var that = this;
   req.push($.get($(this).text(), function (data) {
     if ($(that).hasClass("disable")||$(that).children("span").hasClass("noshow"))
@@ -45,6 +46,8 @@ function clear () {
 }
 
 function Init () {
-  $("li").click(handler);
-  $("li").click();
+  $(".apb").bind("click", function () {
+    $("li").click();
+    $(this).unbind("click");
+  });
 }

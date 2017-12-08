@@ -56,30 +56,33 @@ function clear () {
 }
 
 function Init () {
-  var ID = ["A", "B", "C", "D", "E"];
-  var handers = {
-    "A": aHandler,
-    "B": bHandler,
-    "C": cHandler,
-    "D": dHandler,
-    "E": eHandler
-  }
-  ID.sort(function(){ return 0.5 - Math.random(); });
-  var sequence = "";
-  for (var i = 0; i < 5; i++) {
-    sequence += ID[i] + ( i == 4 ? "":"，" );
-  }
-  $("#sequence").text(sequence).removeClass("noshow");
-  var sum = 0;
-  handers[ID[0]](sum).then(
-    sum => { handers[ID[1]](sum).then (
-      sum => { handers[ID[2]](sum).then (
-        sum => { handers[ID[3]](sum).then ( 
-          sum => { handers[ID[4]](sum).then ( 
-            sum => { bubbleHandler(sum);
-            })
+  $(".apb").bind("click", function () {
+    $(this).unbind("click");
+    var ID = ["A", "B", "C", "D", "E"];
+    var handers = {
+      "A": aHandler,
+      "B": bHandler,
+      "C": cHandler,
+      "D": dHandler,
+      "E": eHandler
+    }
+    ID.sort(function(){ return 0.5 - Math.random(); });
+    var sequence = "";
+    for (var i = 0; i < 5; i++) {
+      sequence += ID[i] + ( i == 4 ? "":"，" );
+    }
+    $("#sequence").text(sequence).removeClass("noshow");
+    var sum = 0;
+    handers[ID[0]](sum).then(
+      sum => { handers[ID[1]](sum).then (
+        sum => { handers[ID[2]](sum).then (
+          sum => { handers[ID[3]](sum).then ( 
+            sum => { handers[ID[4]](sum).then ( 
+              sum => { bubbleHandler(sum);
+              })
+            });
           });
         });
       });
-    });
+  })
 }

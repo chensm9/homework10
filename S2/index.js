@@ -55,16 +55,19 @@ function clear () {
 }
 
 function Init () {
-  var sum = 0;
-  aHandler(sum).then(
-    sum => { bHandler(sum).then (
-      sum => { cHandler(sum).then (
-        sum => { dHandler(sum).then ( 
-          sum => { eHandler(sum).then ( 
-            sum => { bubbleHandler(sum);
-            })
+  $(".apb").bind("click", function () {
+    var sum = 0;
+    aHandler(sum).then(
+      sum => { bHandler(sum).then (
+        sum => { cHandler(sum).then (
+          sum => { dHandler(sum).then ( 
+            sum => { eHandler(sum).then ( 
+              sum => { bubbleHandler(sum);
+              });
+            });
           });
         });
       });
-    });
+    $(this).unbind("click");
+  });
 }

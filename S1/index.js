@@ -1,6 +1,5 @@
 window.onload = function () {
   Init();
-
   $("#button").mouseleave(function () {
     clear();
     Init();
@@ -15,8 +14,8 @@ function Init() {
     $(this).siblings().removeClass('enable').addClass('disable');
     var that = this;
     var span = $(this).children("span");
-    $.get($(this).text(),function(data){
-      if ($(that).children("span").hasClass("noshow")) 
+    $.get($(this).text()[0],function(data){
+      if ($(that).hasClass("disable")||$(that).children("span").hasClass("noshow")) 
         return;
       $(span).text(data);
       $(that).removeClass('enable').addClass('disable');
