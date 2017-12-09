@@ -34,7 +34,7 @@ function handler (id, sum) {
   return new Promise((resolve, reject) => {
     $.ajax({
       url: id.substr(1), 
-      success: function (data) {
+      success: data => {
         if ($(id).hasClass("disable")||$(id).children("span").hasClass("noshow")) 
           return;
         sum += parseInt(data);
@@ -89,10 +89,10 @@ function Init () {
     $("#message").removeClass("noshow");
     var sum = 0;
     handers[ID[0]](sum)
-    .then(sum => { return handers[ID[1]](sum)})
-    .then(sum => { return handers[ID[2]](sum)})
-    .then(sum => { return handers[ID[3]](sum)})
-    .then(sum => { return handers[ID[4]](sum)})
-    .then(sum => { bubbleHandler(sum)});
+    .then(sum => { return handers[ID[1]](sum);})
+    .then(sum => { return handers[ID[2]](sum);})
+    .then(sum => { return handers[ID[3]](sum);})
+    .then(sum => { return handers[ID[4]](sum);})
+    .then(sum => { bubbleHandler(sum);});
   })
 }
